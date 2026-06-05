@@ -69,6 +69,31 @@ svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="160" height="20">
 
 print(svg)
 
+<span class="openalex-badge" data-doi="10.1038/s41586-021-03431-4" data-hide-zero="true"></span>
+
+<script>
+(function(){
+  document.querySelectorAll('.openalex-badge').forEach(function(el){
+    var doi = el.getAttribute('data-doi');
+    if(!doi) return;
+    fetch('https://api.openalex.org/works?filter=doi:'+encodeURIComponent(doi)+'&mailto=test@example.com')
+      .then(function(r){return r.json()})
+      .then(function(d){
+        var n = d.results[0].cited_by_count || 0;
+        if(n==0 && el.getAttribute('data-hide-zero')) return;
+        el.innerHTML = '<img src="data:image/svg+xml,'+encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" width="130" height="20">'+
+          '<rect width="130" height="20" rx="3" fill="#0077B5"/>'+
+          '<text x="8" y="14" fill="#fff" font-size="11" font-family="sans-serif" font-weight="bold">'+n+' citations</text>'+
+          '</svg>'
+        )+'" width="130" height="20" alt="OpenAlex citations" />';
+      })
+      .catch(function(){});
+  });
+})();
+</script>
+
+
 	
 <HR>
 <!-- ------------------------------------------------------------- -->
