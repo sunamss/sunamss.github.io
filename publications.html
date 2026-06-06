@@ -242,7 +242,7 @@ in contact with a rigid foundation</A>, <i>Internat. J. Systems Sci.</i>, 48(16)
 [29] Bing Sun and Yang Jiao, 
 <A HREF="https://internationalpubls.com/index.php/cana/article/view/137" target="_blank">Optimal control of two-drug therapy for a HIV model</A>, 
 <i>Comm. Appl. Nonlinear Anal.</i>, 24(4)(2017), 29-45. 
-<span class="openalex-badge" data-title="Optimal control of two-drug therapy for a HIV model" data-hide-zero="true"></span>
+<span class="openalex-badge" data-title="Optimal control of two-drug therapy for a HIV model" data-author="Bing Sun" data-year="2005" data-hide-zero="true"></span>
 <BR><BR>
  
 [28] Bing Sun, 
@@ -428,7 +428,7 @@ dynamics: viscosity solution approach</A>, <i>Optimal Control Appl. Methods</i>,
 [6] Bing Sun and Bao-Zhu Guo, 
 <A HREF="http://sysmath.com/jssc/EN/Y2005/V18/I3/285" target="_blank">Maximum principle for the optimal control of an ablation-transpiration
 cooling system</A>, <i>J. Syst. Sci. Complex.</i>, 18(3)(2005), 285-301. 
-<span class="openalex-badge" data-title="Maximum principle for the optimal control of an ablation-transpiration cooling system" data-author="Bing Sun" data-year="2005" data-hide-zero="true"></span>
+<span class="openalex-badge" data-title="Maximum principle for the optimal control of an ablation-transpiration cooling system" data-hide-zero="true"></span>
 <BR><BR>
  
 [5] Yang-Yang Wang and Bing Sun, 
@@ -494,17 +494,22 @@ Go back to <A HREF = "https://sunamss.github.io/">the index page</A>!
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.openalex-badge').forEach(async el=>{
-    const doi=el.dataset.doi,title=el.dataset.title,auth=el.dataset.author,yr=el.dataset.year,hideZero=el.dataset.hideZero==='true';
-    let url;
-    if(doi) url=`https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
-    else url=`https://api.openalex.org/works?search=${encodeURIComponent(title+' '+auth)}&filter=publication_year:${yr}&per-page=1`;
+    const doi=el.dataset.doi,title=el.dataset.title,hideZero=el.dataset.hideZero==='true';
+    let targetApi;
+    // 跨域代理前缀，解决浏览器CORS拦截
+    const proxy = "https://corsproxy.io/?";
+    if(doi){
+      targetApi = `https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
+    }else{
+      // NO-DOI纯标题检索
+      targetApi = `https://api.openalex.org/works?search=${encodeURIComponent(title)}&per-page=1`;
+    }
     try{
-      const res=await fetch(url);
+      const res=await fetch(proxy+encodeURIComponent(targetApi));
       const d=await res.json();
       const item=doi?d:d.results[0];
       if(!item){if(!hideZero)el.textContent='Citations 0';return;}
       const cnt=item.cited_by_count;
-      el.title='OpenAlex';
       el.onclick=()=>window.open(item.id,'_blank');
       if(cnt===0 && hideZero) return;
       el.textContent=`Citations ${cnt}`;
@@ -513,12 +518,12 @@ document.addEventListener('DOMContentLoaded',()=>{
 })
 </script>
 
- 
-<!-- Use case 1: with DOI (your original format) -->
-<!-- <span class="openalex-badge" data-doi="10.15388/NA.2015.1.1" data-hide-zero="true"></span> -->
+<!-- DOI用法 -->
+<span class="openalex-badge" data-doi="10.15388/NA.2015.1.1" data-hide-zero="true"></span>
 
-<!-- Use case 2: NO DOI, use title+author+year -->
-<!-- <span class="openalex-badge" data-title="Maximum principle for the optimal control of an ablation-transpiration cooling system" data-author="Bing Sun" data-year="2005" data-hide-zero="true"></span> -->
+<!-- NO-DOI仅标题（你要的单行） -->
+<span class="openalex-badge" data-title="Deep learning in medical image analysis" data-hide-zero="true"></span>
+
 	
 </BODY>
 </HTML> 
