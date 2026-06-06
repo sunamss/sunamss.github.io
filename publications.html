@@ -424,13 +424,7 @@ dynamics: viscosity solution approach</A>, <i>Optimal Control Appl. Methods</i>,
 [6] Bing Sun and Bao-Zhu Guo, 
 <A HREF="http://sysmath.com/jssc/EN/Y2005/V18/I3/285" target="_blank">Maximum principle for the optimal control of an ablation-transpiration
 cooling system</A>, <i>J. Syst. Sci. Complex.</i>, 18(3)(2005), 285-301. 
-<!-- 用标题搜索，取第一条结果的引用数 -->
-<span class="openalex-badge" 
-      data-title="Maximum principle for the optimal control of an ablation-transpiration cooling system" 
-      data-author="Sun" 
-      data-year="2005" 
-      data-hide-zero="true">
-</span>
+<span class="openalex-badge" data-title="Maximum principle for the optimal control of an ablation-transpiration cooling system" data-author="Bing Sun" data-year="2005" data-hide-zero="true"></span>
 <BR><BR>
  
 [5] Yang-Yang Wang and Bing Sun, 
@@ -483,28 +477,6 @@ Go back to <A HREF = "https://sunamss.github.io/">the index page</A>!
 	<BR> <BR><BR>
 
 <!-- OpenAlex citations counter script -->
-<script>
-(function(){
-  document.querySelectorAll('.openalex-badge').forEach(function(el){
-    var doi = el.getAttribute('data-doi');
-    if(!doi) return;
-    fetch('https://api.openalex.org/works?filter=doi:'+encodeURIComponent(doi)+'&mailto=test@example.com')
-      .then(r=>r.json())
-      .then(d=>{
-        var n = d.results[0].cited_by_count || 0;
-        if(n==0 && el.getAttribute('data-hide-zero')) return;
-        el.innerHTML = '<img src="data:image/svg+xml,'+encodeURIComponent(
-          '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="14">'+
-          '<rect width="150" height="14" rx="3" fill="#0077B5"/>'+
-          '<text x="8" y="10" fill="#fff" font-size="9" font-family="sans-serif" font-weight="bold">Cited: '+n+'</text>'+
-          '</svg>'
-        )+'" width="80" height="14" style="vertical-align:text-bottom" alt="OpenAlex" />';
-      })
-      .catch(()=>{});
-  });
-})();
-</script>
-
 <style>
 .openalex-badge{
   display:inline-flex;align-items:center;background:#005fcc;color:#fff;
@@ -535,12 +507,13 @@ document.addEventListener('DOMContentLoaded',()=>{
 })
 </script>
 
+<!-- 
 <!-- Use case 1: with DOI (your original format) -->
 <span class="openalex-badge" data-doi="10.15388/NA.2015.1.1" data-hide-zero="true"></span>
 
 <!-- Use case 2: NO DOI, use title+author+year -->
 <span class="openalex-badge" data-title="Maximum principle for the optimal control of an ablation-transpiration cooling system" data-author="Bing Sun" data-year="2005" data-hide-zero="true"></span>
-
+ -->
 	
 </BODY>
 </HTML> 
