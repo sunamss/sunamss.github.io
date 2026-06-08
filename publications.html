@@ -495,11 +495,16 @@ Go back to <A HREF = "https://sunamss.github.io/">the index page</A>!
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.openalex-badge').forEach(async el=>{
-    const doi=el.dataset.doi,title=el.dataset.title,auth=el.dataset.author,yr=el.dataset.year,id=el.dataset.id,hideZero=el.dataset.hideZero==='true';
+    const doi=el.dataset.doi,
+          title=el.dataset.title,
+          auth=el.dataset.author,
+          yr=el.dataset.year,
+          id=el.dataset.id, 
+          hideZero=el.dataset.hideZero==='true';
     let url;
-	if(id) url=`https://api.openalex.org/works/${id}`;
+    if(id) url=`https://api.openalex.org/works/${id}`; 
     else if(doi) url=`https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
-    else url=`https://api.openalex.org/works?search=${encodeURIComponent(title+' '+auth)}&filter=publication_year:${yr}&per-page=1`;
+    else url=`https://api.openalex.org/works?search=${encodeURIComponent(title)}&filter=publication_year:${yr}&per-page=1`;
     try{
       const res=await fetch(url);
       const d=await res.json();
@@ -514,6 +519,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   })
 })
 </script>
+
 
  
 <!-- Use case 1: with DOI (your original format) -->
