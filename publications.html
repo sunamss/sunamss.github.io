@@ -495,14 +495,15 @@ Go back to <A HREF = "https://sunamss.github.io/">the index page</A>!
 <script>
 document.addEventListener('DOMContentLoaded',()=>{
   document.querySelectorAll('.openalex-badge').forEach(async el=>{
-    const doi=el.dataset.doi,title=el.dataset.title,auth=el.dataset.author,yr=el.dataset.year,hideZero=el.dataset.hideZero==='true';
+    const doi=el.dataset.doi,title=el.dataset.title,auth=el.dataset.author,yr=el.dataset.year,id=el.dataset.id,hideZero=el.dataset.hideZero==='true';
     let url;
-    if(doi) url=`https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
+	if(id) url=`https://api.openalex.org/works/${id}`;
+    else if(doi) url=`https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
     else url=`https://api.openalex.org/works?search=${encodeURIComponent(title+' '+auth)}&filter=publication_year:${yr}&per-page=1`;
     try{
       const res=await fetch(url);
       const d=await res.json();
-      const item=doi?d:d.results[0];
+      const item= id ? d : (doi?d:d.results[0]); 
       if(!item){if(!hideZero)el.textContent='Citations 0';return;}
       const cnt=item.cited_by_count;
       el.title='OpenAlex';
