@@ -493,71 +493,55 @@ Go back to <A HREF = "https://sunamss.github.io/">the index page</A>!
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded',()=>{
-  document.querySelectorAll('.openalex-badge').forEach(async el=>{
-    const doi=el.dataset.doi,
-          id=el.dataset.id,
-          title=el.dataset.title,
-          auth=el.dataset.author,
-          yr=el.dataset.year,
-          hideZero=el.dataset.hideZero==='true';
-    let apiUrl;
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.openalex-badge').forEach(el => {
+    const doi = el.dataset.doi;
+    const id = el.dataset.id;
+    const hideZero = el.dataset.hideZero === 'true';
+    let url;
 
     
-    if(id) {
-      apiUrl = `https://api.openalex.org/works/${id}`;
-    }
-    
-    else if(doi) {
-      apiUrl = `https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
-    }
-    
-    else {
-      apiUrl = `https://api.openalex.org/works?search=${encodeURIComponent(title+' '+auth)}&filter=publication_year:${yr}&per-page=1`;
+    if (id) {
+      url = `https://api.openalex.org/works/${id}`;
+    } else if (doi) {
+      url = `https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
+    } else {
+      return; 
     }
 
     
-    const proxy = 'https://api.allorigins.win/raw?url=';
-    const targetUrl = proxy + encodeURIComponent(apiUrl);
-
-    try{
-      const res = await fetch(targetUrl);
-      const data = await res.json();
-      let paper;
-
-      if(id || doi) {
-        paper = data;
-      } else {
-        paper = data.results?.[0];
-      }
-
-      if(!paper) {
-        if(!hideZero) el.textContent = "Citations 0";
-        return;
-      }
-
-      const count = paper.cited_by_count || 0;
-      el.textContent = `Citations ${count}`;
-      el.onclick = () => window.open(paper.id, '_blank');
-
-      if(count === 0 && hideZero) {
+    const script = document.createElement('script');
+    const callbackName = 'oaCallback_' + Math.random().toString(36).slice(2);
+    window[callbackName] = (data) => {
+      const cnt = data.cited_by_count || 0;
+      el.title = 'OpenAlex';
+      el.onclick = () => window.open(data.id, '_blank');
+      if (cnt === 0 && hideZero) {
         el.textContent = '';
+      } else {
+        el.textContent = `Citations ${cnt}`;
       }
-
-    } catch(e) {
-      el.textContent = "—";
-    }
+      
+      delete window[callbackName];
+      document.body.removeChild(script);
+    };
+    
+    script.src = url + '?callback=' + callbackName;
+    script.onerror = () => {
+      el.textContent = '—';
+      delete window[callbackName];
+      document.body.removeChild(script);
+    };
+    document.body.appendChild(script);
   });
 });
 </script>
 
-<!-- 测试 1：DOI 用法 -->
-<span class="openalex-badge" data-doi="10.15388/NA.2015.1.1" data-hide-zero="true"></span> 
+<!-- 测试 1：DOI -->
+<span class="openalex-badge" data-doi="10.15388/NA.2015.1.1" data-hide-zero="true"></span>
 
-<!-- 测试 2：OpenAlex ID 用法 -->
+<!-- 测试 2：OpenAlex ID（W2741536437）-->
 <span class="openalex-badge" data-id="W2741536437" data-hide-zero="true"></span>
-
-
 	
 </BODY>
 </HTML> 
