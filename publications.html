@@ -493,55 +493,33 @@ Go back to <A HREF = "https://sunamss.github.io/">the index page</A>!
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.openalex-badge').forEach(el => {
-    const doi = el.dataset.doi;
-    const id = el.dataset.id;
-    const hideZero = el.dataset.hideZero === 'true';
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.openalex-badge').forEach(async el=>{
+    const doi=el.dataset.doi,title=el.dataset.title,auth=el.dataset.author,yr=el.dataset.year,hideZero=el.dataset.hideZero==='true';
     let url;
-
-    
-    if (id) {
-      url = `https://api.openalex.org/works/${id}`;
-    } else if (doi) {
-      url = `https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
-    } else {
-      return; 
-    }
-
-    
-    const script = document.createElement('script');
-    const callbackName = 'oaCallback_' + Math.random().toString(36).slice(2);
-    window[callbackName] = (data) => {
-      const cnt = data.cited_by_count || 0;
-      el.title = 'OpenAlex';
-      el.onclick = () => window.open(data.id, '_blank');
-      if (cnt === 0 && hideZero) {
-        el.textContent = '';
-      } else {
-        el.textContent = `Citations ${cnt}`;
-      }
-      
-      delete window[callbackName];
-      document.body.removeChild(script);
-    };
-    
-    script.src = url + '?callback=' + callbackName;
-    script.onerror = () => {
-      el.textContent = '—';
-      delete window[callbackName];
-      document.body.removeChild(script);
-    };
-    document.body.appendChild(script);
-  });
-});
+    if(doi) url=`https://api.openalex.org/works/doi:${encodeURIComponent(doi)}`;
+    else url=`https://api.openalex.org/works?search=${encodeURIComponent(title+' '+auth)}&filter=publication_year:${yr}&per-page=1`;
+    try{
+      const res=await fetch(url);
+      const d=await res.json();
+      const item=doi?d:d.results[0];
+      if(!item){if(!hideZero)el.textContent='Citations 0';return;}
+      const cnt=item.cited_by_count;
+      el.title='OpenAlex';
+      el.onclick=()=>window.open(item.id,'_blank');
+      if(cnt===0 && hideZero) return;
+      el.textContent=`Citations ${cnt}`;
+    }catch{el.textContent='—';}
+  })
+})
 </script>
 
-<!-- 测试 1：DOI -->
-<span class="openalex-badge" data-doi="10.15388/NA.2015.1.1" data-hide-zero="true"></span>
+ 
+<!-- Use case 1: with DOI (your original format) -->
+<!-- <span class="openalex-badge" data-doi="10.15388/NA.2015.1.1" data-hide-zero="true"></span> -->
 
-<!-- 测试 2：OpenAlex ID（W2741536437）-->
-<span class="openalex-badge" data-id="W2741536437" data-hide-zero="true"></span>
+<!-- Use case 2: NO DOI, use title+author+year -->
+<!-- <span class="openalex-badge" data-title="Maximum principle for the optimal control of an ablation-transpiration cooling system" data-author="Bing Sun" data-year="2005" data-hide-zero="true"></span> -->
 	
 </BODY>
 </HTML> 
